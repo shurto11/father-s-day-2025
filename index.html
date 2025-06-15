@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>ありがとうステップ表示</title>
+  <title>父の日</title>
   <style>
     body {
       font-family: sans-serif;
@@ -30,14 +30,53 @@
       color: #666;
       cursor: not-allowed;
     }
+    .fade-in {
+    display: block !important;
+    opacity: 0;
+    animation: fadein 1s forwards;
+    }
+
+    @keyframes fadein {
+      to {
+        opacity: 1;
+      }
+    }
+
+    #successImage {
+      position: fixed;
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      opacity: 0;
+      pointer-events: none; /* クリック無効化（任意） */
+      transition: opacity 1s ease-in-out;
+      z-index: 10;
+    }
+
+    #successImage.fade-in {
+      opacity: 1;
+    }
+
   </style>
 </head>
 <body>
-  <h1>ありがとうステップ表示</h1>
+  <h1>父の日</h1>
   <div id="result">．．．．．</div>
   <div id="counter">　</div>
   <div id="total"></div>
+
   <button id="startButton" onclick="startDisplay()">スタート</button>
+  <audio id="trueSound1" src="true01.mp3" preload="auto"></audio>
+  <audio id="trueSound2" src="true02.mp3" preload="auto"></audio>
+  <audio id="trueSound3" src="true03.mp3" preload="auto"></audio>
+  <audio id="trueSound4" src="true04.mp3" preload="auto"></audio>
+  <audio id="clearSound" src="clear01.mp3" preload="auto"></audio>
+  <audio id="falseSound" src="false01.mp3" preload="auto"></audio>
+
+  <img id="successImage" src="father_day.png" alt="父の日">
+
+
 
   <script>
     const correct = ['あ', 'り', 'が', 'と', 'う'];
@@ -73,13 +112,20 @@
       const resultDiv = document.getElementById('result');
       const counterDiv = document.getElementById('counter');
       const button = document.getElementById('startButton');
+      const trueSound1 = document.getElementById('trueSound1');
+      const trueSound2= document.getElementById('trueSound2');
+      const trueSound3 = document.getElementById('trueSound3');
+      const trueSound4 = document.getElementById('trueSound4');
+      const clearSound = document.getElementById('clearSound');
+      const falseSound = document.getElementById('falseSound');
+
       let currentText = ['．', '．', '．', '．', '．'];
       let delay = 0;
       let failed = false;
       let hitCount = 0;
 
       resultDiv.textContent = currentText.join('');
-      counterDiv.textContent = '';
+      counterDiv.textContent = `${hitCount} hit`;
       button.disabled = true;
 
       for (let i = 0; i < 5; i++) {
@@ -90,14 +136,24 @@
             if (shuffled[index] === correct[index]) {
               currentText[index] = shuffled[index];
               resultDiv.textContent = currentText.join('');
+
+                // 再生する音を選ぶ（1～4をループ）
+                const trueSounds = [trueSound1, trueSound2, trueSound3, trueSound4, clearSound];
+                trueSounds[hitCount % trueSounds.length].play();
+              
               hitCount++;
 
-              if (index === 4 && hitCount === 5) {
-                counterDiv.textContent = '成功';
-                hitStats[5]++;
-                updateTotalDisplay();
-                button.disabled = false;
-              }
+                if (index === 4 && hitCount === 5) {
+                  counterDiv.textContent = '成功';
+                  hitStats[5]++;
+                  updateTotalDisplay();
+                  button.disabled = false;
+
+                  const successImage = document.getElementById('successImage');
+                  successImage.classList.add('fade-in');
+                }
+
+
 
             } else {
               failed = true;
@@ -105,6 +161,7 @@
                 currentText[j] = shuffled[j];
               }
               resultDiv.textContent = currentText.join('');
+              falseSound.play();
               counterDiv.textContent = `${hitCount} hit`;
               if (hitCount >= 0 && hitCount <= 3) {
                 hitStats[hitCount]++;
@@ -128,4 +185,16 @@
     updateTotalDisplay();
   </script>
 </body>
+<footer style="
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #878c8e;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  ">
+  © 2025 Shurto_11
+</footer>
 </html>
