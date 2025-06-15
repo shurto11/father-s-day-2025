@@ -58,6 +58,22 @@
       opacity: 1;
     }
 
+    #osiiImage {
+      position: fixed;
+      top: 20%;
+      left: 70%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      opacity: 0;
+      pointer-events: none; /* クリック無効化（任意） */
+      transition: opacity 1s ease-in-out;
+      z-index: 10;
+    }
+
+    #osiiImage.fade-in {
+      opacity: 1;
+    }
+
   </style>
 </head>
 <body>
@@ -75,6 +91,7 @@
   <audio id="falseSound" src="false01.mp3" preload="auto"></audio>
 
   <img id="successImage" src="father_day.png" alt="父の日">
+  <img id="osiiImage" src="osii.png" alt="惜しい">
 
 
 
@@ -142,7 +159,6 @@
                 trueSounds[hitCount % trueSounds.length].play();
               
               hitCount++;
-
                 if (index === 4 && hitCount === 5) {
                   counterDiv.textContent = '成功';
                   hitStats[5]++;
@@ -165,6 +181,13 @@
               counterDiv.textContent = `${hitCount} hit`;
               if (hitCount >= 0 && hitCount <= 3) {
                 hitStats[hitCount]++;
+                if (hitCount === 3) {
+                  const osiiImage = document.getElementById('osiiImage');
+                  osiiImage.classList.add('fade-in');
+                  setTimeout(() => {
+                    osiiImage.classList.remove('fade-in');
+                  }, 2000);
+                }
               }
               updateTotalDisplay();
               setTimeout(() => {
